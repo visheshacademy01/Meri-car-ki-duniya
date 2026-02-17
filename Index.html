@@ -15,14 +15,11 @@
   --text:white;
 }
 
-* { box-sizing:border-box; }
-
 body {
   margin:0;
   font-family:Poppins,sans-serif;
   background: radial-gradient(circle at top, var(--bg1), var(--bg2));
   color:var(--text);
-  transition:0.4s;
   overflow-x:hidden;
 }
 
@@ -36,11 +33,10 @@ body {
   animation:moveParticles 80s linear infinite;
 }
 @keyframes moveParticles {
-  from { background-position:0 0; }
-  to { background-position:1200px 1200px; }
+  from {background-position:0 0;}
+  to {background-position:1200px 1200px;}
 }
 
-/* Header */
 header {
   text-align:center;
   padding:30px 15px 10px;
@@ -54,7 +50,7 @@ header h1 {
   text-shadow:0 0 25px var(--accent);
 }
 
-/* Typing Animation */
+/* Typing */
 .typing {
   margin-top:10px;
   font-size:1rem;
@@ -65,13 +61,12 @@ header h1 {
   width:0;
   animation:typing 4s steps(40,end) forwards, blink 0.8s infinite;
 }
-
 @keyframes typing {
-  from { width:0; }
-  to { width:280px; }
+  from {width:0;}
+  to {width:280px;}
 }
 @keyframes blink {
-  50% { border-color:transparent; }
+  50% {border-color:transparent;}
 }
 
 /* Controls */
@@ -102,7 +97,7 @@ input, select {
   gap:16px;
 }
 
-/* Glass Card */
+/* Card */
 .card {
   backdrop-filter:blur(16px);
   background:rgba(255,255,255,0.08);
@@ -116,9 +111,7 @@ input, select {
 }
 
 .card:hover {
-  box-shadow:
-    0 0 12px var(--accent),
-    0 0 25px rgba(0,245,255,0.35);
+  box-shadow:0 0 12px var(--accent), 0 0 25px rgba(0,245,255,0.35);
   transform:translateY(-6px) scale(1.02);
 }
 
@@ -147,12 +140,6 @@ input, select {
   padding:22px;
   border:1px solid rgba(255,255,255,0.2);
   box-shadow:0 0 35px var(--accent);
-  animation:pop 0.25s ease;
-}
-
-@keyframes pop {
-  from { transform:scale(0.85); opacity:0; }
-  to { transform:scale(1); opacity:1; }
 }
 
 .close {
@@ -165,7 +152,6 @@ footer {
   text-align:center;
   opacity:0.5;
   padding:20px;
-  font-size:0.85rem;
 }
 </style>
 </head>
@@ -206,22 +192,19 @@ footer {
 const container = document.getElementById("carContainer");
 const modal = document.getElementById("modal");
 
-/* Dataset Size */
-const TOTAL_CARS = 2000; // Change to 1000 / 5000 / 20000
-
-const categories = ["SUV","Sedan","Hatchback"];
-const brands = ["Maruti","Hyundai","Tata","Mahindra","Honda","Toyota","Kia"];
-
-const cars = [];
-for(let i=1;i<=TOTAL_CARS;i++){
-  cars.push({
-    title:`${brands[i % brands.length]} Model ${i}`,
-    engine:`${(1+(i%3)).toFixed(1)}L Petrol/Diesel`,
-    power:`${80+(i%160)} bhp`,
-    type:categories[i % categories.length],
-    category:categories[i % categories.length]
-  });
-}
+/* REAL CAR DATA */
+const cars = [
+  {title:"Mahindra Thar", engine:"2.0L Turbo Petrol / 2.2L Diesel", power:"150 bhp", type:"SUV", category:"SUV"},
+  {title:"Hyundai Creta", engine:"1.5L Petrol / Diesel / Turbo", power:"160 bhp", type:"SUV", category:"SUV"},
+  {title:"Tata Nexon", engine:"1.2L Turbo Petrol / 1.5L Diesel", power:"120 bhp", type:"SUV", category:"SUV"},
+  {title:"Maruti Swift", engine:"1.2L Petrol", power:"89 bhp", type:"Hatchback", category:"Hatchback"},
+  {title:"Baleno", engine:"1.2L Petrol", power:"90 bhp", type:"Hatchback", category:"Hatchback"},
+  {title:"Honda City", engine:"1.5L i-VTEC Petrol", power:"121 bhp", type:"Sedan", category:"Sedan"},
+  {title:"Verna", engine:"1.5L NA / Turbo", power:"160 bhp", type:"Sedan", category:"Sedan"},
+  {title:"Skoda Slavia", engine:"1.0L / 1.5L TSI", power:"150 bhp", type:"Sedan", category:"Sedan"},
+  {title:"Kia Seltos", engine:"1.5L Petrol / Diesel / Turbo", power:"160 bhp", type:"SUV", category:"SUV"},
+  {title:"Toyota Fortuner", engine:"2.7L Petrol / 2.8L Diesel", power:"204 bhp", type:"SUV", category:"SUV"}
+];
 
 /* Render */
 function renderCars(list){
@@ -232,7 +215,7 @@ function renderCars(list){
     card.innerHTML=`<h2>${car.title}</h2>
                     <p>Category: ${car.type}</p>`;
 
-    /* 3D Tilt */
+    /* Tilt */
     card.addEventListener("mousemove", e=>{
       const r=card.getBoundingClientRect();
       const x=e.clientX-r.left;
