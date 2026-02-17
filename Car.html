@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarZone by Vishesh</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg1:#0f172a;
+  --bg2:#020617;
+  --accent:#38bdf8;
+  --text:white;
+}
+
+body {
+  margin:0;
+  font-family:Poppins,sans-serif;
+  background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+  color:var(--text);
+  transition:0.4s;
+}
+
+#particles {
+  position:fixed;
+  inset:0;
+  background-image:url("https://www.transparenttextures.com/patterns/stardust.png");
+  opacity:0.2;
+  z-index:-1;
+  animation:moveParticles 60s linear infinite;
+}
+@keyframes moveParticles {
+  from {background-position:0 0;}
+  to {background-position:1000px 1000px;}
+}
+
+header {
+  text-align:center;
+  padding:25px 10px 5px;
+}
+header h1 {
+  font-size:2.2rem;
+  background:linear-gradient(90deg,var(--accent),#818cf8);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.controls {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  padding:10px;
+}
+
+input, select {
+  backdrop-filter:blur(10px);
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:14px;
+  padding:8px 12px;
+  color:white;
+  outline:none;
+}
+
+.container {
+  padding:15px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:15px;
+}
+
+.card {
+  backdrop-filter:blur(14px);
+  background:rgba(255,255,255,0.08);
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.12);
+  padding:15px;
+  cursor:pointer;
+  transition:0.2s;
+  transform-style:preserve-3d;
+}
+
+.card:hover {
+  box-shadow:0 0 18px var(--accent);
+}
+
+.card img {
+  width:100%;
+  height:140px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+
+.card h2 {
+  font-size:1.05rem;
+  color:var(--accent);
+  margin:0 0 5px 0;
+}
+
+.card p {
+  margin:0;
+  font-size:0.9rem;
+  opacity:0.8;
+}
+
+/* Modal */
+.modal {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-content {
+  width:90%;
+  max-width:500px;
+  backdrop-filter:blur(16px);
+  background:rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,0.2);
+  animation:pop 0.25s ease;
+}
+
+@keyframes pop {
+  from {transform:scale(0.85);opacity:0;}
+  to {transform:scale(1);opacity:1;}
+}
+
+.close {
+  float:right;
+  cursor:pointer;
+  opacity:0.6;
+}
+
+/* 20 Themes */
+.theme-dark{--bg1:#0f172a;--bg2:#020617;--accent:#38bdf8;}
+.theme-neon{--bg1:#020617;--bg2:#000;--accent:#00f5ff;}
+.theme-sunset{--bg1:#3b0764;--bg2:#be185d;--accent:#facc15;}
+.theme-ocean{--bg1:#082f49;--bg2:#020617;--accent:#22d3ee;}
+.theme-luxury{--bg1:#111827;--bg2:#000;--accent:#d4af37;}
+.theme-fire{--bg1:#450a0a;--bg2:#000;--accent:#f97316;}
+.theme-forest{--bg1:#052e16;--bg2:#020617;--accent:#4ade80;}
+.theme-purple{--bg1:#1e1b4b;--bg2:#020617;--accent:#a78bfa;}
+.theme-ice{--bg1:#0c4a6e;--bg2:#020617;--accent:#7dd3fc;}
+.theme-rose{--bg1:#4c0519;--bg2:#020617;--accent:#fb7185;}
+.theme-gold{--bg1:#422006;--bg2:#020617;--accent:#fbbf24;}
+.theme-cyber{--bg1:#000;--bg2:#020617;--accent:#ff00ff;}
+.theme-matrix{--bg1:#000;--bg2:#001a00;--accent:#00ff66;}
+.theme-sky{--bg1:#0c4a6e;--bg2:#082f49;--accent:#38bdf8;}
+.theme-red{--bg1:#1f0000;--bg2:#020617;--accent:#ef4444;}
+.theme-blue{--bg1:#020617;--bg2:#0c4a6e;--accent:#3b82f6;}
+.theme-teal{--bg1:#042f2e;--bg2:#020617;--accent:#14b8a6;}
+.theme-indigo{--bg1:#1e1b4b;--bg2:#020617;--accent:#6366f1;}
+.theme-amber{--bg1:#451a03;--bg2:#020617;--accent:#f59e0b;}
+.theme-white{--bg1:#e5e7eb;--bg2:#9ca3af;--accent:#111;--text:#111;}
+
+footer {
+  text-align:center;
+  opacity:0.5;
+  padding:20px;
+}
+</style>
+</head>
+
+<body class="theme-dark">
+<div id="particles"></div>
+
+<header>
+  <h1>🚘 CarZone by Vishesh</h1>
+</header>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search cars...">
+
+  <select id="category">
+    <option value="all">All Categories</option>
+    <option value="SUV">SUV</option>
+    <option value="Sedan">Sedan</option>
+    <option value="Hatchback">Hatchback</option>
+    <option value="Luxury">Luxury</option>
+    <option value="Sports">Sports</option>
+    <option value="Coupe">Coupe</option>
+  </select>
+
+  <select id="theme">
+    <option value="theme-dark">Dark</option>
+    <option value="theme-neon">Neon</option>
+    <option value="theme-sunset">Sunset</option>
+    <option value="theme-ocean">Ocean</option>
+    <option value="theme-luxury">Luxury</option>
+    <option value="theme-fire">Fire</option>
+    <option value="theme-forest">Forest</option>
+    <option value="theme-purple">Purple</option>
+    <option value="theme-ice">Ice</option>
+    <option value="theme-rose">Rose</option>
+    <option value="theme-gold">Gold</option>
+    <option value="theme-cyber">Cyber</option>
+    <option value="theme-matrix">Matrix</option>
+    <option value="theme-sky">Sky</option>
+    <option value="theme-red">Red</option>
+    <option value="theme-blue">Blue</option>
+    <option value="theme-teal">Teal</option>
+    <option value="theme-indigo">Indigo</option>
+    <option value="theme-amber">Amber</option>
+    <option value="theme-white">White</option>
+  </select>
+</div>
+
+<div class="container" id="carContainer"></div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="modal.style.display='none'">✖</span>
+    <h2 id="modalTitle"></h2>
+    <p id="modalSpecs"></p>
+  </div>
+</div>
+
+<footer>© 2026 CarZone by Vishesh</footer>
+
+<script>
+const container = document.getElementById("carContainer");
+const modal = document.getElementById("modal");
+
+/* Generate Large Dataset */
+const categories = ["SUV", "Sedan", "Hatchback", "Luxury", "Sports", "Coupe"];
+const brands = ["Maruti", "Hyundai", "Tata", "Mahindra", "Honda", "Toyota", "Kia", "BMW", "Mercedes", "Ford", "Audi", "Volkswagen"];
+
+const cars = [];
+const TOTAL_CARS = 2000; // 🔥 Change to 1000 / 5000 / 20000 for testing
+
+for (let i = 1; i <= TOTAL_CARS; i++) {
+  const brand = brands[i % brands.length];
+  const category = categories[i % categories.length];
+  cars.push({
+    title: `${brand} Model ${i}`,
+    engine: `${(1 + (i % 3)).toFixed(1)}L Petrol/Diesel`,
+    power: `${80 + (i % 150)} bhp`,
+    type: category,
+    category: category,
+    image: `https://via.placeholder.com/300x200/333/fff?text=${encodeURIComponent(brand + ' ' + i)}`
+  });
+}
+
+/* Render Cars */
+function renderCars(list) {
+  container.innerHTML = "";
+  list.forEach(car => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.title = car.title;
+    card.dataset.engine = car.engine;
+    card.dataset.power = car.power;
+    card.dataset.type = car.type;
+    card.dataset.category = car.category;
+
+    card.innerHTML = `
+      <img src="${car.image}" alt="${car.title}">
+      <h2>${car.title}</h2>
+      <p>Category: ${car.type}</p>
+    `;
+
+    /* Tilt */
+    card.addEventListener("mousemove", e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const rx = (y - rect.height / 2) / 25;
+      const ry = (rect.width / 2 - x) / 25;
+      card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "rotateX(0) rotateY(0)";
+    });
+
+    /* Modal */
+    card.addEventListener("click", () => {
+      document.getElementById("modalTitle").innerText = car.title;
+      document.getElementById("modalSpecs").innerHTML = `
+        Engine: ${car.engine}<br>
+        Power: ${car.power}<br>
+        Type: ${car.type}
+      `;
+      modal.style.display = "flex";
+    });
+
+    container.appendChild(card);
+  });
+}
+
+renderCars(cars);
+
+/* Search + Filter */
+const search = document.getElementById("search");
+const category = document.getElementById("category");
+
+function filterCars() {
+  const text = search.value.toLowerCase();
+  const cat = category.value;
+
+  const filtered = cars.filter(car => {
+    const matchText = car.title.toLowerCase().includes(text);
+    const matchCat = cat === "all" || car.category === cat;
+    return matchText && matchCat;
+  });
+
+  renderCars(filtered);
+}
+
+search.addEventListener("keyup", filterCars);
+category.addEventListener("change", filterCars);
+
+/* Theme Switch */
+document.getElementById("theme").addEventListener("change", e => {
+  document.body.className = e.target.value;
+});
+</script>
+
+</body>
+</html>
