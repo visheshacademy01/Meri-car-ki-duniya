@@ -192,21 +192,43 @@ footer {
 const container = document.getElementById("carContainer");
 const modal = document.getElementById("modal");
 
-/* REAL CAR DATA */
-const cars = [
-  {title:"Mahindra Thar", engine:"2.0L Turbo Petrol / 2.2L Diesel", power:"150 bhp", type:"SUV", category:"SUV"},
-  {title:"Hyundai Creta", engine:"1.5L Petrol / Diesel / Turbo", power:"160 bhp", type:"SUV", category:"SUV"},
-  {title:"Tata Nexon", engine:"1.2L Turbo Petrol / 1.5L Diesel", power:"120 bhp", type:"SUV", category:"SUV"},
-  {title:"Maruti Swift", engine:"1.2L Petrol", power:"89 bhp", type:"Hatchback", category:"Hatchback"},
-  {title:"Baleno", engine:"1.2L Petrol", power:"90 bhp", type:"Hatchback", category:"Hatchback"},
-  {title:"Honda City", engine:"1.5L i-VTEC Petrol", power:"121 bhp", type:"Sedan", category:"Sedan"},
-  {title:"Verna", engine:"1.5L NA / Turbo", power:"160 bhp", type:"Sedan", category:"Sedan"},
-  {title:"Skoda Slavia", engine:"1.0L / 1.5L TSI", power:"150 bhp", type:"Sedan", category:"Sedan"},
-  {title:"Kia Seltos", engine:"1.5L Petrol / Diesel / Turbo", power:"160 bhp", type:"SUV", category:"SUV"},
-  {title:"Toyota Fortuner", engine:"2.7L Petrol / 2.8L Diesel", power:"204 bhp", type:"SUV", category:"SUV"}
+/* SETTINGS */
+const TOTAL_CARS = 5000; // 🔥 Change to 1000 / 10000 / 20000
+
+/* REAL BASE MODELS */
+const baseCars = [
+  {name:"Mahindra Thar", type:"SUV"},
+  {name:"Hyundai Creta", type:"SUV"},
+  {name:"Tata Nexon", type:"SUV"},
+  {name:"Maruti Swift", type:"Hatchback"},
+  {name:"Baleno", type:"Hatchback"},
+  {name:"Honda City", type:"Sedan"},
+  {name:"Hyundai Verna", type:"Sedan"},
+  {name:"Skoda Slavia", type:"Sedan"},
+  {name:"Toyota Fortuner", type:"SUV"},
+  {name:"Kia Seltos", type:"SUV"}
 ];
 
-/* Render */
+const years = ["2020","2021","2022","2023","2024","2025"];
+const editions = ["Sport","Turbo","Edition","Pro","X","Plus"];
+
+/* GENERATE REALISTIC VARIANTS */
+const cars = [];
+for(let i=0; i<TOTAL_CARS; i++){
+  const base = baseCars[i % baseCars.length];
+  const year = years[i % years.length];
+  const edition = editions[i % editions.length];
+
+  cars.push({
+    title: `${base.name} ${year} ${edition}`,
+    engine: `${1 + (i % 3)}.0L Petrol/Diesel`,
+    power: `${90 + (i % 180)} bhp`,
+    type: base.type,
+    category: base.type
+  });
+}
+
+/* RENDER */
 function renderCars(list){
   container.innerHTML="";
   list.forEach(car=>{
