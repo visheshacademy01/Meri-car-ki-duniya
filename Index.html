@@ -1,288 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CarZone by Vishesh</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <style>
-:root {
-  --bg1:#0f172a;
-  --bg2:#020617;
-  --accent:#00f5ff;
-  --text:white;
-}
-
-body {
-  margin:0;
-  font-family:Poppins,sans-serif;
-  background: radial-gradient(circle at top, var(--bg1), var(--bg2));
-  color:var(--text);
-  overflow-x:hidden;
-}
-
-/* Particles */
-#particles {
-  position:fixed;
-  inset:0;
-  background-image:url("https://www.transparenttextures.com/patterns/stardust.png");
-  opacity:0.25;
-  z-index:-1;
-  animation:moveParticles 80s linear infinite;
-}
-@keyframes moveParticles {
-  from {background-position:0 0;}
-  to {background-position:1200px 1200px;}
-}
-
-header {
-  text-align:center;
-  padding:30px 15px 10px;
-}
-
-header h1 {
-  font-size:2.3rem;
-  background:linear-gradient(90deg,var(--accent),#818cf8);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  text-shadow:0 0 25px var(--accent);
-}
-
-/* Typing */
-.typing {
-  margin-top:10px;
-  font-size:1rem;
-  opacity:0.75;
-  border-right:2px solid var(--accent);
-  white-space:nowrap;
-  overflow:hidden;
-  width:0;
-  animation:typing 4s steps(40,end) forwards, blink 0.8s infinite;
-}
-@keyframes typing {
-  from {width:0;}
-  to {width:280px;}
-}
-@keyframes blink {
-  50% {border-color:transparent;}
-}
-
-/* Controls */
-.controls {
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-  padding:10px;
-}
-
-input, select {
-  backdrop-filter:blur(12px);
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.15);
-  border-radius:14px;
-  padding:9px 14px;
-  color:white;
-  outline:none;
-  box-shadow:0 0 12px rgba(0,245,255,0.15);
-}
-
-/* Grid */
-.container {
-  padding:15px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:16px;
-}
-
-/* Card */
-.card {
-  backdrop-filter:blur(16px);
-  background:rgba(255,255,255,0.08);
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,0.12);
-  padding:16px;
-  cursor:pointer;
-  transition:0.25s;
-  transform-style:preserve-3d;
-  box-shadow:0 0 15px rgba(0,245,255,0.08);
-}
-
-.card:hover {
-  box-shadow:0 0 12px var(--accent), 0 0 25px rgba(0,245,255,0.35);
-  transform:translateY(-6px) scale(1.02);
-}
-
-.card h2 {
-  font-size:1.05rem;
-  color:var(--accent);
-  text-shadow:0 0 12px var(--accent);
-}
-
-/* Modal */
-.modal {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-
-.modal-content {
-  width:90%;
-  max-width:500px;
-  backdrop-filter:blur(18px);
-  background:rgba(255,255,255,0.08);
-  border-radius:22px;
-  padding:22px;
-  border:1px solid rgba(255,255,255,0.2);
-  box-shadow:0 0 35px var(--accent);
-}
-
-.close {
-  float:right;
-  cursor:pointer;
-  opacity:0.6;
-}
-
-footer {
-  text-align:center;
-  opacity:0.5;
-  padding:20px;
-}
+:root{--accent:#00f5ff;--bg1:#0f172a;--bg2:#020617;--text:white}
+body{margin:0;font-family:Poppins,sans-serif;background:radial-gradient(circle at top,var(--bg1),var(--bg2));color:var(--text)}
+#particles{position:fixed;inset:0;background-image:url('https://www.transparenttextures.com/patterns/stardust.png');opacity:.2;z-index:-1;animation:move 90s linear infinite}
+@keyframes move{from{background-position:0 0}to{background-position:1400px 1400px}}
+header{text-align:center;padding:20px}
+h1{background:linear-gradient(90deg,var(--accent),#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 25px var(--accent)}
+nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:10px}
+nav button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:white;padding:8px 14px;border-radius:14px;cursor:pointer;backdrop-filter:blur(10px)}
+nav button:hover{box-shadow:0 0 10px var(--accent)}
+.page{display:none;padding:15px}
+.active{display:block}
+.container{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}
+.card{background:rgba(255,255,255,.08);backdrop-filter:blur(14px);border-radius:18px;padding:14px;border:1px solid rgba(255,255,255,.15);transition:.25s}
+.card:hover{box-shadow:0 0 12px var(--accent),0 0 22px rgba(0,245,255,.35)}
+.card h3{margin:0;color:var(--accent);text-shadow:0 0 8px var(--accent)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center}
+.modal-content{width:90%;max-width:480px;background:rgba(255,255,255,.08);backdrop-filter:blur(18px);border-radius:22px;padding:22px;border:1px solid rgba(255,255,255,.2);box-shadow:0 0 35px var(--accent)}
+.close{float:right;cursor:pointer;opacity:.6}
 </style>
 </head>
-
 <body>
 <div id="particles"></div>
-
-<header>
-  <h1>🚘 CarZone by Vishesh</h1>
-  <div class="typing">Indian Car Encyclopedia • Futuristic UI</div>
-</header>
-
-<div class="controls">
-  <input type="text" id="search" placeholder="Search cars...">
-
-  <select id="category">
-    <option value="all">All Categories</option>
-    <option value="SUV">SUV</option>
-    <option value="Sedan">Sedan</option>
-    <option value="Hatchback">Hatchback</option>
-  </select>
-</div>
-
-<div class="container" id="carContainer"></div>
-
-<!-- Modal -->
-<div class="modal" id="modal">
+<header><h1>🚘 CarZone by Vishesh</h1></header>
+<nav id="brandNav"></nav><div id="pages"></div><div class="modal" id="modal">
   <div class="modal-content">
     <span class="close" onclick="modal.style.display='none'">✖</span>
     <h2 id="modalTitle"></h2>
     <p id="modalSpecs"></p>
   </div>
-</div>
+</div><script>
+const data={
+  "Maruti Suzuki":[
+    {model:"Swift ZXI",type:"Hatchback",engine:"1.2L Petrol",power:"89 bhp"},
+    {model:"Baleno Alpha",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+    {model:"Dzire VXI",type:"Sedan",engine:"1.2L Petrol",power:"89 bhp"},
+    {model:"Brezza ZXI+",type:"SUV",engine:"1.5L Petrol",power:"103 bhp"}
+  ],
+  "Hyundai":[
+    {model:"i20 Asta",type:"Hatchback",engine:"1.2L Petrol",power:"83 bhp"},
+    {model:"Verna SX(O)",type:"Sedan",engine:"1.5L Turbo",power:"160 bhp"},
+    {model:"Creta SX",type:"SUV",engine:"1.5L Petrol",power:"115 bhp"}
+  ],
+  "Tata":[
+    {model:"Tiago XT",type:"Hatchback",engine:"1.2L Petrol",power:"86 bhp"},
+    {model:"Altroz XZ",type:"Hatchback",engine:"1.2L Petrol",power:"86 bhp"},
+    {model:"Nexon Fearless",type:"SUV",engine:"1.2L Turbo",power:"120 bhp"}
+  ],
+  "Mahindra":[
+    {model:"Thar LX",type:"SUV",engine:"2.0L Turbo",power:"150 bhp"},
+    {model:"Scorpio‑N Z8",type:"SUV",engine:"2.0L Turbo",power:"200 bhp"}
+  ],
+  "Toyota":[
+    {model:"Fortuner 4x4",type:"SUV",engine:"2.8L Diesel",power:"204 bhp"},
+    {model:"Innova Crysta ZX",type:"MPV",engine:"2.4L Diesel",power:"150 bhp"}
+  ]
+};
 
-<footer>© 2026 CarZone by Vishesh</footer>
+const brandNav=document.getElementById('brandNav');
+const pagesDiv=document.getElementById('pages');
 
-<script>
-const container = document.getElementById("carContainer");
-const modal = document.getElementById("modal");
+Object.keys(data).forEach((brand,i)=>{
+  const btn=document.createElement('button');
+  btn.innerText=brand;
+  btn.onclick=()=>showPage(brand);
+  brandNav.appendChild(btn);
 
-/* SETTINGS */
-const TOTAL_CARS = 5000; // 🔥 Change to 1000 / 10000 / 20000
+  const page=document.createElement('div');
+  page.id=brand;
+  page.className='page'+(i===0?' active':'');
+  page.innerHTML=`<h2>${brand}</h2><div class="container"></div>`;
 
-/* REAL BASE MODELS */
-const baseCars = [
-  {name:"Mahindra Thar", type:"SUV"},
-  {name:"Hyundai Creta", type:"SUV"},
-  {name:"Tata Nexon", type:"SUV"},
-  {name:"Maruti Swift", type:"Hatchback"},
-  {name:"Baleno", type:"Hatchback"},
-  {name:"Honda City", type:"Sedan"},
-  {name:"Hyundai Verna", type:"Sedan"},
-  {name:"Skoda Slavia", type:"Sedan"},
-  {name:"Toyota Fortuner", type:"SUV"},
-  {name:"Kia Seltos", type:"SUV"}
-];
-
-const years = ["2020","2021","2022","2023","2024","2025"];
-const editions = ["Sport","Turbo","Edition","Pro","X","Plus"];
-
-/* GENERATE REALISTIC VARIANTS */
-const cars = [];
-for(let i=0; i<TOTAL_CARS; i++){
-  const base = baseCars[i % baseCars.length];
-  const year = years[i % years.length];
-  const edition = editions[i % editions.length];
-
-  cars.push({
-    title: `${base.name} ${year} ${edition}`,
-    engine: `${1 + (i % 3)}.0L Petrol/Diesel`,
-    power: `${90 + (i % 180)} bhp`,
-    type: base.type,
-    category: base.type
-  });
-}
-
-/* RENDER */
-function renderCars(list){
-  container.innerHTML="";
-  list.forEach(car=>{
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`<h2>${car.title}</h2>
-                    <p>Category: ${car.type}</p>`;
-
-    /* Tilt */
-    card.addEventListener("mousemove", e=>{
-      const r=card.getBoundingClientRect();
-      const x=e.clientX-r.left;
-      const y=e.clientY-r.top;
-      const rx=(y-r.height/2)/25;
-      const ry=(r.width/2-x)/25;
-      card.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`;
-    });
-
-    card.addEventListener("mouseleave", ()=>{
-      card.style.transform="rotateX(0) rotateY(0)";
-    });
-
-    /* Modal */
-    card.addEventListener("click", ()=>{
-      modal.style.display="flex";
-      modalTitle.innerText=car.title;
-      modalSpecs.innerHTML=`
-        Engine: ${car.engine}<br>
-        Power: ${car.power}<br>
-        Type: ${car.type}
-      `;
-    });
-
-    container.appendChild(card);
-  });
-}
-
-renderCars(cars);
-
-/* Search + Filter */
-search.addEventListener("keyup", filterCars);
-category.addEventListener("change", filterCars);
-
-function filterCars(){
-  const text=search.value.toLowerCase();
-  const cat=category.value;
-
-  const filtered=cars.filter(car=>{
-    return car.title.toLowerCase().includes(text) &&
-          (cat==="all" || car.category===cat);
+  const grid=page.querySelector('.container');
+  data[brand].forEach(car=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h3>${car.model}</h3><p>${car.type}</p>`;
+    card.onclick=()=>openModal(car,brand);
+    grid.appendChild(card);
   });
 
-  renderCars(filtered);
+  pagesDiv.appendChild(page);
+});
+
+function showPage(brand){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(brand).classList.add('active');
 }
-</script>
-</body>
+
+function openModal(car,brand){
+  modal.style.display='flex';
+  modalTitle.innerText=car.model;
+  modalSpecs.innerHTML=`Brand: ${brand}<br>Type: ${car.type}<br>Engine: ${car.engine}<br>Power: ${car.power}`;
+}
+</script></body>
 </html>
