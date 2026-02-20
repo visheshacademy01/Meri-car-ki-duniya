@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarZone by Vishesh</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --accent:#00f5ff;
+  --bg1:#0f172a;
+  --bg2:#020617;
+  --text:white;
+}
+
+body{
+  margin:0;
+  font-family:Poppins,sans-serif;
+  background:radial-gradient(circle at top,var(--bg1),var(--bg2));
+  color:var(--text);
+}
+
+#particles{
+  position:fixed;
+  inset:0;
+  background-image:url("https://www.transparenttextures.com/patterns/stardust.png");
+  opacity:0.2;
+  z-index:-1;
+  animation:move 90s linear infinite;
+}
+@keyframes move{
+  from{background-position:0 0;}
+  to{background-position:1400px 1400px;}
+}
+
+header{
+  text-align:center;
+  padding:25px 10px 5px;
+}
+
+h1{
+  background:linear-gradient(90deg,var(--accent),#818cf8);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 25px var(--accent);
+}
+
+.controls{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  padding:10px;
+}
+
+input,select{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(14px);
+  border-radius:14px;
+  padding:9px 14px;
+  border:1px solid rgba(255,255,255,0.15);
+  color:white;
+}
+
+.container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+  padding:15px;
+}
+
+.card{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(16px);
+  border-radius:18px;
+  padding:15px;
+  border:1px solid rgba(255,255,255,0.15);
+  cursor:pointer;
+  transition:.25s;
+  transform-style:preserve-3d;
+}
+
+.card:hover{
+  box-shadow:0 0 12px var(--accent),0 0 25px rgba(0,245,255,0.4);
+}
+
+.card h2{
+  font-size:1.05rem;
+  color:var(--accent);
+  text-shadow:0 0 10px var(--accent);
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-content{
+  width:90%;
+  max-width:500px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);
+  border-radius:22px;
+  padding:22px;
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 0 35px var(--accent);
+}
+
+.close{
+  float:right;
+  cursor:pointer;
+  opacity:.6;
+}
+</style>
+</head>
+
+<body>
+<div id="particles"></div>
+
+<header>
+<h1>🚘 CarZone by Vishesh</h1>
+</header>
+
+<div class="controls">
+<input type="text" id="search" placeholder="Search cars...">
+
+<select id="brand">
+<option value="all">All Brands</option>
+<option>Maruti Suzuki</option>
+<option>Hyundai</option>
+<option>Tata</option>
+<option>Mahindra</option>
+<option>Honda</option>
+<option>Toyota</option>
+<option>Kia</option>
+<option>MG</option>
+<option>Renault</option>
+<option>Skoda</option>
+<option>Volkswagen</option>
+<option>BMW</option>
+<option>Audi</option>
+<option>Mercedes-Benz</option>
+<option>Porsche</option>
+<option>Jaguar</option>
+<option>Land Rover</option>
+<option>Ferrari</option>
+<option>Lamborghini</option>
+<option>Rolls-Royce</option>
+</select>
+
+<select id="category">
+<option value="all">All Categories</option>
+<option>Hatchback</option>
+<option>Sedan</option>
+<option>SUV</option>
+<option>MPV</option>
+<option>Coupe</option>
+<option>Convertible</option>
+<option>Sports</option>
+<option>Luxury</option>
+</select>
+</div>
+
+<div class="container" id="carContainer"></div>
+
+<div class="modal" id="modal">
+<div class="modal-content">
+<span class="close" onclick="modal.style.display='none'">✖</span>
+<h2 id="modalTitle"></h2>
+<p id="modalSpecs"></p>
+</div>
+</div>
+
+<script>
+const cars = [
+// Maruti Suzuki Hatchbacks
+{title:"Maruti Alto K10 STD",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Maruti Alto K10 LXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Maruti Alto K10 VXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Maruti Alto K10 VXI+",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Maruti Swift LXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"89 bhp"},
+{title:"Maruti Swift VXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"89 bhp"},
+{title:"Maruti Swift ZXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"89 bhp"},
+{title:"Maruti Swift ZXI+",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"89 bhp"},
+{title:"Maruti Baleno Sigma",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Maruti Baleno Delta",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Maruti Baleno Zeta",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Maruti Baleno Alpha",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+
+// Maruti Suzuki Sedans
+{title:"Maruti Dzire LXI",brand:"Maruti Suzuki",type:"Sedan",engine:"1.2L Petrol",power:"89 bhp"},
+{title:"Maruti Dzire VXI",brand:"Maruti Suzuki",type:"Sedan",engine:"1.2L Petrol",power:"89 bhp"},
+{title:"Maruti Dzire ZXI",brand:"Maruti Suzuki",type:"Sedan",engine:"1.2L Petrol",power:"89 bhp"},
+{title:"Maruti Dzire ZXI+",brand:"Maruti Suzuki",type:"Sedan",engine:"1.2L Petrol",power:"89 bhp"},
+
+// Maruti Suzuki SUVs
+{title:"Maruti Brezza LXI",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Brezza VXI",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Brezza ZXI",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Brezza ZXI+",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Petrol",power:"103 bhp"},
+
+// Maruti Suzuki MPVs
+{title:"Maruti Ertiga LXI",brand:"Maruti Suzuki",type:"MPV",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Ertiga VXI",brand:"Maruti Suzuki",type:"MPV",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Ertiga ZXI",brand:"Maruti Suzuki",type:"MPV",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Ertiga ZXI+",brand:"Maruti Suzuki",type:"MPV",engine:"1.5L Petrol",power:"103 bhp"},
+
+// Hyundai Hatchbacks
+{title:"Hyundai i20 Magna",brand:"Hyundai",type:"Hatchback",engine:"1.2L Petrol",power:"120 bhp"},
+{title:"Hyundai i20 Sportz",brand:"Hyundai",type:"Hatchback",engine:"1.2L Turbo",power:"120 bhp"},
+{title:"Hyundai i20 Asta",brand:"Hyundai",type:"Hatchback",engine:"1.2L Turbo",power:"120 bhp"},
+{title:"Hyundai i20 Asta(O)",brand:"Hyundai",type:"Hatchback",engine:"1.2L Turbo",power:"120 bhp"},
+
+// Hyundai Sedans
+{title:"Hyundai Verna EX",brand:"Hyundai",type:"Sedan",engine:"1.5L NA",power:"160 bhp"},
+{title:"Hyundai Verna S",brand:"Hyundai",type:"Sedan",engine:"1.5L Turbo",power:"160 bhp"},
+{title:"Hyundai Verna SX",brand:"Hyundai",type:"Sedan",engine:"1.5L Turbo",power:"160 bhp"},
+{title:"Hyundai Verna SX(O)",brand:"Hyundai",type:"Sedan",engine:"1.5L Turbo",power:"160 bhp"},
+
+// Hyundai SUVs
+{title:"Hyundai Creta E",brand:"Hyundai",type:"SUV",engine:"1.5L Petrol",power:"160 bhp"},
+{title:"Hyundai Creta EX",brand:"Hyundai",type:"SUV",engine:"1.5L Diesel",power:"160 bhp"},
+{title:"Hyundai Creta S",brand:"Hyundai",type:"SUV",engine:"1.5L Petrol",power:"160 bhp"},
+{title:"Hyundai Creta SX",brand:"Hyundai",type:"SUV",engine:"1.5L Diesel",power:"160 bhp"},
+{title:"Hyundai Creta SX(O)",brand:"Hyundai",type:"SUV",engine:"1.5L Petrol",power:"160 bhp"},
+{title:"Hyundai Venue E",brand:"Hyundai",type:"SUV",engine:"1.0L Turbo",power:"120 bhp"},
+{title:"Hyundai Venue S",brand:"Hyundai",type:"SUV",engine:"1.0L Turbo",power:"120 bhp"},
+{title:"Hyundai Venue SX",brand:"Hyundai",type:"SUV",engine:"1.0L Turbo",power:"120 bhp"},
+{title:"Hyundai Venue SX(O)",brand:"Hyundai",type:"SUV",engine:"1.0L Turbo",power:"120 bhp"},
+
+// Tata Hatchbacks
+{title:"Tata Tiago XE",brand:"Tata",type:"Hatchback",engine:"1.2L Petrol",power:"86 bhp"},
+{title:"Tata Tiago XM",brand:"Tata",type:"Hatchback",engine:"1.2L Petrol",power:"86 bhp"},
+{title:"Tata Tiago XT",brand:"Tata",type:"Hatchback",engine:"1.2L Petrol",power:"86 bhp"},
+{title:"Tata Tiago XZ",brand:"Tata",type:"Hatchback",engine:"1.2L Petrol",power:"86 bhp"},
+{title:"Tata Altroz XE",brand:"Tata",type:"Hatchback",engine:"1.2L Petrol",power:"110 bhp"},
+{title:"Tata Altroz XM",brand:"Tata",type:"Hatchback",engine:"1.2L Turbo",power:"110 bhp"},
+{title:"Tata Altroz XT",brand:"Tata",type:"Hatchback",engine:"1.2L Turbo",power:"110 bhp"},
+{title:"Tata Altroz XZ",brand:"Tata",type:"Hatchback",engine:"1.2L Turbo",power:"110 bhp"},
+
+// Tata SUVs
+{title:"Tata Nexon Smart",brand:"Tata",type:"SUV",engine:"1.2L Turbo",power:"120 bhp"},
+{title:"Tata Nexon Pure",brand:"Tata",type:"SUV",engine:"1.2L Turbo",power:"120 bhp"},
+{title:"Tata Nexon Creative",brand:"Tata",type:"SUV",engine:"1.2L Turbo",power:"120 bhp"},
+{title:"Tata Nexon Fearless",brand:"Tata",type:"SUV",engine:"1.2L Turbo",power:"120 bhp"},
+{title:"Tata Harrier XE",brand:"Tata",type:"SUV",engine:"2.0L Diesel",power:"170 bhp"},
+{title:"Tata Harrier XM",brand:"Tata",type:"SUV",engine:"2.0L Diesel",power:"170 bhp"},
+{title:"Tata Harrier XT",brand:"Tata",type:"SUV",engine:"2.0L Diesel",power:"170 bhp"},
+{title:"Tata Harrier XZ",brand:"Tata",type:"SUV",engine:"2.0L Diesel",power:"170 bhp"},
+
+// Mahindra SUVs
+{title:"Mahindra Thar AX",brand:"Mahindra",type:"SUV",engine:"2.0L Turbo",power:"150 bhp"},
+{title:"Mahindra Thar LX",brand:"Mahindra",type:"SUV",engine:"2.0L Turbo",power:"150 bhp"},
+{title:"Mahindra Thar 4x4",brand:"Mahindra",type:"SUV",engine:"2.0L Turbo",power:"150 bhp"},
+{title:"Mahindra Scorpio-N Z2",brand:"Mahindra",type:"SUV",engine:"2.0 Turbo",power:"200 bhp"},
+{title:"Mahindra Scorpio-N Z4",brand:"Mahindra",type:"SUV",engine:"2.0 Turbo",power:"200 bhp"},
+{title:"Mahindra Scorpio-N Z6",brand:"Mahindra",type:"SUV",engine:"2.0 Turbo",power:"200 bhp"},
+{title:"Mahindra Scorpio-N Z8",brand:"Mahindra",type:"SUV",engine:"2.0 Turbo",power:"200 bhp"},
+{title:"Mahindra XUV700 MX",brand:"Mahindra",type:"SUV",engine:"2.0 Turbo",power:"200 bhp"},
+{title:"Mahindra XUV700 AX3",brand:"Mahindra",type:"SUV",engine:"2.0 Turbo",power:"200 bhp"},
+{title:"Mahindra XUV700 AX5",brand:"Mahindra",type:"SUV",engine:"2.0 Turbo",power:"200 bhp"},
+{title:"Mahindra XUV700 AX7",brand:"Mahindra",type:"SUV",engine:"2.0 Turbo",power:"200 bhp"},
+
+// Kia SUVs
+{title:"Kia Sonet HTE",brand:"Kia",type:"SUV",engine:"1.0 Turbo",power:"120 bhp"},
+{title:"Kia Sonet HTK",brand:"Kia",type:"SUV",engine:"1.0 Turbo",power:"120 bhp"},
+{title:"Kia Sonet HTX",brand:"Kia",type:"SUV",engine:"1.0 Turbo",power:"120 bhp"},
+{title:"Kia Sonet GTX+",brand:"Kia",type:"SUV",engine:"1.0 Turbo",power:"120 bhp"},
+{title:"Kia Seltos HTE",brand:"Kia",type:"SUV",engine:"1.5L Petrol",power:"160 bhp"},
+{title:"Kia Seltos HTK",brand:"Kia",type:"SUV",engine:"1.5L Turbo",power:"160 bhp"},
+{title:"Kia Seltos HTX",brand:"Kia",type:"SUV",engine:"1.5L Turbo",power:"160 bhp"},
+{title:"Kia Seltos GTX+",brand:"Kia",type:"SUV",engine:"1.5L Turbo",power:"160 bhp"},
+
+// Kia MPVs
+{title:"Kia Carens Premium",brand:"Kia",type:"MPV",engine:"1.5L Petrol",power:"160 bhp"},
+{title:"Kia Carens Prestige",brand:"Kia",type:"MPV",engine:"1.5L Petrol",power:"160 bhp"},
+{title:"Kia Carens Luxury",brand:"Kia",type:"MPV",engine:"1.5L Petrol",power:"160 bhp"},
+
+// Toyota Hatchbacks
+{title:"Toyota Glanza E",brand:"Toyota",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Toyota Glanza S",brand:"Toyota",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Toyota Glanza G",brand:"Toyota",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Toyota Glanza V",brand:"Toyota",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+
+// Toyota SUVs
+{title:"Toyota Hyryder E",brand:"Toyota",type:"SUV",engine:"Hybrid",power:"115 bhp"},
+{title:"Toyota Hyryder S",brand:"Toyota",type:"SUV",engine:"Hybrid",power:"115 bhp"},
+{title:"Toyota Hyryder G",brand:"Toyota",type:"SUV",engine:"Hybrid",power:"115 bhp"},
+{title:"Toyota Hyryder V",brand:"Toyota",type:"SUV",engine:"Hybrid",power:"115 bhp"},
+{title:"Toyota Fortuner 4x2",brand:"Toyota",type:"SUV",engine:"2.8L Diesel",power:"204 bhp"},
+{title:"Toyota Fortuner 4x4",brand:"Toyota",type:"SUV",engine:"2.8L Diesel",power:"204 bhp"},
+{title:"Toyota Fortuner Legender",brand:"Toyota",type:"SUV",engine:"2.8L Diesel",power:"204 bhp"},
+
+// MG SUVs
+{title:"MG Hector Style",brand:"MG",type:"SUV",engine:"1.5 Turbo",power:"143 bhp"},
+{title:"MG Hector Super",brand:"MG",type:"SUV",engine:"1.5 Turbo",power:"143 bhp"},
+{title:"MG Hector Smart",brand:"MG",type:"SUV",engine:"1.5 Turbo",power:"143 bhp"},
+{title:"MG Hector Sharp",brand:"MG",type:"SUV",engine:"1.5 Turbo",power:"143 bhp"},
+{title:"MG Astor Style",brand:"MG",type:"SUV",engine:"1.5L Petrol",power:"110 bhp"},
+{title:"MG Astor Super",brand:"MG",type:"SUV",engine:"1.5L Petrol",power:"110 bhp"},
+{title:"MG Astor Smart",brand:"MG",type:"SUV",engine:"1.5L Petrol",power:"110 bhp"},
+{title:"MG Astor Sharp",brand:"MG",type:"SUV",engine:"1.5L Petrol",power:"110 bhp"},
+
+// Renault Hatchbacks
+{title:"Renault Kwid RXE",brand:"Renault",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Renault Kwid RXL",brand:"Renault",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Renault Kwid RXT",brand:"Renault",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Renault Kwid Climber",brand:"Renault",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+
+// Renault SUVs
+{title:"Renault Kiger RXE",brand:"Renault",type:"SUV",engine:"1.0L Turbo",power:"100 bhp"},
+{title:"Renault Kiger RXL",brand:"Renault",type:"SUV",engine:"1.0L Turbo",power:"100 bhp"},
+{title:"Renault Kiger RXT",brand:"Renault",type:"SUV",engine:"1.0L Turbo",power:"100 bhp"},
+{title:"Renault Kiger RXZ",brand:"Renault",type:"SUV",engine:"1.0L Turbo",power:"100 bhp"},
+
+// Skoda Sedans
+{title:"Skoda Slavia Active",brand:"Skoda",type:"Sedan",engine:"1.0 TSI",power:"150 bhp"},
+{title:"Skoda Slavia Ambition",brand:"Skoda",type:"Sedan",engine:"1.5 TSI",power:"150 bhp"},
+{title:"Skoda Slavia Style",brand:"Skoda",type:"Sedan",engine:"1.5 TSI",power:"150 bhp"},
+
+// Skoda SUVs
+{title:"Skoda Kushaq Active",brand:"Skoda",type:"SUV",engine:"1.0 TSI",power:"150 bhp"},
+{title:"Skoda Kushaq Ambition",brand:"Skoda",type:"SUV",engine:"1.5 TSI",power:"150 bhp"},
+{title:"Skoda Kushaq Style",brand:"Skoda",type:"SUV",engine:"1.5 TSI",power:"150 bhp"},
+
+// Volkswagen Sedans
+{title:"Volkswagen Virtus Comfortline",brand:"Volkswagen",type:"Sedan",engine:"1.0 TSI",power:"150 bhp"},
+{title:"Volkswagen Virtus Highline",brand:"Volkswagen",type:"Sedan",engine:"1.5 TSI",power:"150 bhp"},
+{title:"Volkswagen Virtus GT Plus",brand:"Volkswagen",type:"Sedan",engine:"1.5 TSI",power:"150 bhp"},
+
+// Volkswagen SUVs
+{title:"Volkswagen Taigun Comfortline",brand:"Volkswagen",type:"SUV",engine:"1.0 TSI",power:"150 bhp"},
+{title:"Volkswagen Taigun Highline",brand:"Volkswagen",type:"SUV",engine:"1.5 TSI",power:"150 bhp"},
+{title:"Volkswagen Taigun GT Plus",brand:"Volkswagen",type:"SUV",engine:"1.5 TSI",power:"150 bhp"},
+
+// BMW Luxury Sedans
+{title:"BMW 3 Series 320d",brand:"BMW",type:"Sedan",engine:"2.0L Diesel",power:"190 bhp"},
+{title:"BMW 3 Series 320i",brand:"BMW",type:"Sedan",engine:"2.0L Petrol",power:"184 bhp"},
+{title:"BMW 5 Series 520d",brand:"BMW",type:"Sedan",engine:"2.0L Diesel",power:"200 bhp"},
+{title:"BMW 5 Series 530i",brand:"BMW",type:"Sedan",engine:"3.0L Petrol",power:"258 bhp"},
+{title:"BMW 7 Series 740d",brand:"BMW",type:"Luxury",engine:"3.0L Diesel",power:"320 bhp"},
+{title:"BMW 7 Series 760i",brand:"BMW",type:"Luxury",engine:"6.6L Petrol",power:"536 bhp"},
+
+// BMW SUVs
+{title:"BMW X1 sDrive20d",brand:"BMW",type:"SUV",engine:"2.0L Diesel",power:"190 bhp"},
+{title:"BMW X3 xDrive20d",brand:"BMW",type:"SUV",engine:"2.0L Diesel",power:"190 bhp"},
+{title:"BMW X5 xDrive30d",brand:"BMW",type:"SUV",engine:"3.0L Diesel",power:"265 bhp"},
+{title:"BMW X7 xDrive30d",brand:"BMW",type:"SUV",engine:"3.0L Diesel",power:"265 bhp"},
+
+// BMW Sports
+{title:"BMW M440i xDrive",brand:"BMW",type:"Coupe",engine:"3.0L Turbo",power:"382 bhp"},
+{title:"BMW M440i Convertible",brand:"BMW",type:"Convertible",engine:"3.0L Turbo",power:"382 bhp"},
+{title:"BMW M440i Gran Coupe",brand:"BMW",type:"Coupe",engine:"3.0L Turbo",power:"382 bhp"},
+
+// Audi Luxury Sedans
+{title:"Audi A4 35 TDI",brand:"Audi",type:"Sedan",engine:"2.0L Diesel",power:"163 bhp"},
+{title:"Audi A4 40 TFSI",brand:"Audi",type:"Sedan",engine:"2.0L Turbo",power:"201 bhp"},
+{title:"Audi A6 40 TDI",brand:"Audi",type:"Sedan",engine:"2.0L Diesel",power:"201 bhp"},
+{title:"Audi A6 55 TFSI",brand:"Audi",type:"Sedan",engine:"3.0L Turbo",power:"340 bhp"},
+{title:"Audi A8 60 TFSI",brand:"Audi",type:"Luxury",engine:"4.2L Turbo",power:"460 bhp"},
+
+// Audi SUVs
+{title:"Audi Q3 35 TDI",brand:"Audi",type:"SUV",engine:"2.0L Diesel",power:"163 bhp"},
+{title:"Audi Q3 40 TFSI",brand:"Audi",type:"SUV",engine:"2.0L Turbo",power:"201 bhp"},
+{title:"Audi Q5 40 TDI",brand:"Audi",type:"SUV",engine:"2.0L Diesel",power:"200 bhp"},
+{title:"Audi Q7 55 TDI",brand:"Audi",type:"SUV",engine:"3.0L Diesel",power:"291 bhp"},
+
+// Audi Sports
+{title:"Audi RS5 Coupe",brand:"Audi",type:"Coupe",engine:"2.9L Twin-Turbo",power:"450 bhp"},
+{title:"Audi RS6 Sedan",brand:"Audi",type:"Sedan",engine:"4.0L Twin-Turbo",power:"592 bhp"},
+
+// Mercedes-Benz Luxury Sedans
+{title:"Mercedes C-Class C300d",brand:"Mercedes-Benz",type:"Sedan",engine:"2.0L Diesel",power:"245 bhp"},
+{title:"Mercedes C-Class C300",brand:"Mercedes-Benz",type:"Sedan",engine:"2.0L Turbo",power:"254 bhp"},
+{title:"Mercedes E-Class E350d",brand:"Mercedes-Benz",type:"Sedan",engine:"3.0L Diesel",power:"276 bhp"},
+{title:"Mercedes E-Class E450",brand:"Mercedes-Benz",type:"Sedan",engine:"3.0L Turbo",power:"382 bhp"},
+{title:"Mercedes S-Class S500",brand:"Mercedes-Benz",type:"Luxury",engine:"4.0L Turbo",power:"455 bhp"},
+{title:"Mercedes-AMG S63",brand:"Mercedes-Benz",type:"Luxury",engine:"4.0L Twin-Turbo",power:"625 bhp"},
+
+// Mercedes-Benz SUVs
+{title:"Mercedes GLC C300d",brand:"Mercedes-Benz",type:"SUV",engine:"2.0L Diesel",power:"245 bhp"},
+{title:"Mercedes GLE GLE450",brand:"Mercedes-Benz",type:"SUV",engine:"3.0L Turbo",power:"382 bhp"},
+{title:"Mercedes GLS GLS580",brand:"Mercedes-Benz",type:"SUV",engine:"4.0L Turbo",power:"516 bhp"},
+
+// Mercedes-Benz Sports
+{title:"Mercedes-AMG C63 Coupe",brand:"Mercedes-Benz",type:"Coupe",engine:"4.0L Twin-Turbo",power:"510 bhp"},
+{title:"Mercedes-AMG E63 Cabriolet",brand:"Mercedes-Benz",type:"Convertible",engine:"4.0L Twin-Turbo",power:"603 bhp"},
+
+// Porsche Sports
+{title:"Porsche 911 Carrera",brand:"Porsche",type:"Sports",engine:"3.0L Twin-Turbo",power:"369 bhp"},
+{title:"Porsche 911 Carrera S",brand:"Porsche",type:"Sports",engine:"3.0L Twin-Turbo",power:"443 bhp"},
+{title:"Porsche 911 Turbo",brand:"Porsche",type:"Sports",engine:"3.8L Twin-Turbo",power:"580 bhp"},
+{title:"Porsche 911 Turbo S",brand:"Porsche",type:"Sports",engine:"3.8L Twin-Turbo",power:"641 bhp"},
+{title:"Porsche Cayman",brand:"Porsche",type:"Coupe",engine:"2.0L Turbo",power:"300 bhp"},
+{title:"Porsche Cayman S",brand:"Porsche",type:"Coupe",engine:"2.0L Turbo",power:"345 bhp"},
+{title:"Porsche Boxster",brand:"Porsche",type:"Convertible",engine:"2.0L Turbo",power:"300 bhp"},
+{title:"Porsche Boxster S",brand:"Porsche",type:"Convertible",engine:"2.0L Turbo",power:"345 bhp"},
+{title:"Porsche Cayenne Diesel",brand:"Porsche",type:"SUV",engine:"4.2L Diesel",power:"385 bhp"},
+{title:"Porsche Cayenne S",brand:"Porsche",type:"SUV",engine:"2.9L Twin-Turbo",power:"434 bhp"},
+{title:"Porsche Cayenne Turbo",brand:"Porsche",type:"SUV",engine:"4.8L Twin-Turbo",power:"570 bhp"},
+{title:"Porsche Macan S",brand:"Porsche",type:"SUV",engine:"2.0L Turbo",power:"354 bhp"},
+
+// Jaguar Luxury Sedans
+{title:"Jaguar XE S",brand:"Jaguar",type:"Sedan",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Jaguar XE R-Dynamic HSE",brand:"Jaguar",type:"Sedan",engine:"2.0L Diesel",power:"181 bhp"},
+{title:"Jaguar XF S",brand:"Jaguar",type:"Sedan",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Jaguar XJ R-Dynamic",brand:"Jaguar",type:"Luxury",engine:"3.0L Supercharged",power:"340 bhp"},
+
+// Jaguar SUVs
+{title:"Jaguar F-PACE S",brand:"Jaguar",type:"SUV",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Jaguar E-PACE R-Dynamic",brand:"Jaguar",type:"SUV",engine:"2.0L Turbo",power:"246 bhp"},
+
+// Jaguar Sports
+{title:"Jaguar F-TYPE Coupe",brand:"Jaguar",type:"Coupe",engine:"2.0L Turbo",power:"300 bhp"},
+{title:"Jaguar F-TYPE Convertible",brand:"Jaguar",type:"Convertible",engine:"5.0L Supercharged",power:"575 bhp"},
+
+// Land Rover SUVs
+{title:"Land Rover Range Rover Sport P250",brand:"Land Rover",type:"SUV",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Land Rover Range Rover Sport P400",brand:"Land Rover",type:"SUV",engine:"3.0L Supercharged",power:"395 bhp"},
+{title:"Land Rover Range Rover Evoque",brand:"Land Rover",type:"SUV",engine:"2.0L Turbo",power:"246 bhp"},
+{title:"Land Rover Range Rover Velar",brand:"Land Rover",type:"SUV",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Land Rover Discovery Sport",brand:"Land Rover",type:"SUV",engine:"2.0L Turbo",power:"246 bhp"},
+{title:"Land Rover Discovery",brand:"Land Rover",type:"SUV",engine:"3.0L Turbo",power:"306 bhp"},
+
+// Ferrari Sports
+{title:"Ferrari F8 Tributo",brand:"Ferrari",type:"Sports",engine:"3.9L Twin-Turbo",power:"710 bhp"},
+{title:"Ferrari SF90 Stradale",brand:"Ferrari",type:"Sports",engine:"4.0L Twin-Turbo+Hybrid",power:"986 bhp"},
+{title:"Ferrari 812 Competizione",brand:"Ferrari",type:"Sports",engine:"6.2L Naturally Aspirated",power:"819 bhp"},
+{title:"Ferrari Portofino M Convertible",brand:"Ferrari",type:"Convertible",engine:"3.9L Twin-Turbo",power:"612 bhp"},
+{title:"Ferrari Roma Coupe",brand:"Ferrari",type:"Coupe",engine:"3.9L Twin-Turbo",power:"612 bhp"},
+
+// Lamborghini Sports
+{title:"Lamborghini Revuelto",brand:"Lamborghini",type:"Sports",engine:"6.5L Hybrid",power:"1001 bhp"},
+{title:"Lamborghini Revuelto Roadster",brand:"Lamborghini",type:"Convertible",engine:"6.5L Hybrid",power:"1001 bhp"},
+{title:"Lamborghini Huracan STO",brand:"Lamborghini",type:"Sports",engine:"5.2L Naturally Aspirated",power:"645 bhp"},
+{title:"Lamborghini Urus",brand:"Lamborghini",type:"SUV",engine:"4.0L Twin-Turbo",power:"657 bhp"},
+{title:"Lamborghini Urus S",brand:"Lamborghini",type:"SUV",engine:"4.0L Twin-Turbo",power:"666 bhp"},
+
+// Rolls-Royce Luxury
+{title:"Rolls-Royce Phantom",brand:"Rolls-Royce",type:"Luxury",engine:"6.7L Twin-Turbo",power:"563 bhp"},
+{title:"Rolls-Royce Phantom Extended",brand:"Rolls-Royce",type:"Luxury",engine:"6.7L Twin-Turbo",power:"563 bhp"},
+{title:"Rolls-Royce Ghost",brand:"Rolls-Royce",type:"Luxury",engine:"6.6L Twin-Turbo",power:"563 bhp"},
+{title:"Rolls-Royce Wraith",brand:"Rolls-Royce",type:"Coupe",engine:"6.6L Twin-Turbo",power:"624 bhp"},
+{title:"Rolls-Royce Dawn Convertible",brand:"Rolls-Royce",type:"Convertible",engine:"6.6L Twin-Turbo",power:"624 bhp"},
+{title:"Rolls-Royce Cullinan",brand:"Rolls-Royce",type:"SUV",engine:"6.7L Twin-Turbo",power:"563 bhp"},
+
+// Additional Maruti Variants for volume
+{title:"Maruti Celerio X",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"68 bhp"},
+{title:"Maruti Wagon R VXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"68 bhp"},
+{title:"Maruti Wagon R ZXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"68 bhp"},
+{title:"Maruti Ignis Sigma",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Maruti Ignis Delta",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Maruti S-Presso STD",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Maruti S-Presso LXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Maruti S-Presso VXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"67 bhp"},
+{title:"Maruti Ciaz Sigma",brand:"Maruti Suzuki",type:"Sedan",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Ciaz Delta",brand:"Maruti Suzuki",type:"Sedan",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Ciaz Zeta",brand:"Maruti Suzuki",type:"Sedan",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Ciaz Alpha",brand:"Maruti Suzuki",type:"Sedan",engine:"1.5L Petrol",power:"103 bhp"},
+
+// Additional Hyundai Variants
+{title:"Hyundai Aura EX",brand:"Hyundai",type:"Sedan",engine:"1.2L Petrol",power:"83 bhp"},
+{title:"Hyundai Aura S",brand:"Hyundai",type:"Sedan",engine:"1.2L Petrol",power:"83 bhp"},
+{title:"Hyundai Aura SX",brand:"Hyundai",type:"Sedan",engine:"1.2L Petrol",power:"83 bhp"},
+{title:"Hyundai Elantra SX",brand:"Hyundai",type:"Sedan",engine:"2.0L Petrol",power:"152 bhp"},
+{title:"Hyundai Grand i10 NIOS Asta",brand:"Hyundai",type:"Hatchback",engine:"1.2L Petrol",power:"83 bhp"},
+{title:"Hyundai Grand i10 NIOS Magna",brand:"Hyundai",type:"Hatchback",engine:"1.0L Petrol",power:"68 bhp"},
+
+// Additional Tata Variants
+{title:"Tata Punch Pure",brand:"Tata",type:"SUV",engine:"1.2L Petrol",power:"86 bhp"},
+{title:"Tata Punch Creative",brand:"Tata",type:"SUV",engine:"1.2L Petrol",power:"86 bhp"},
+{title:"Tata Punch Fearless",brand:"Tata",type:"SUV",engine:"1.2L Petrol",power:"86 bhp"},
+{title:"Tata Safari XE",brand:"Tata",type:"SUV",engine:"2.0L Diesel",power:"170 bhp"},
+{title:"Tata Safari XT",brand:"Tata",type:"SUV",engine:"2.0L Diesel",power:"170 bhp"},
+{title:"Tata Safari XZ",brand:"Tata",type:"SUV",engine:"2.0L Diesel",power:"170 bhp"},
+
+// Additional Mahindra Variants
+{title:"Mahindra XUV300 W4",brand:"Mahindra",type:"SUV",engine:"1.2L Petrol",power:"110 bhp"},
+{title:"Mahindra XUV300 W5",brand:"Mahindra",type:"SUV",engine:"1.2L Petrol",power:"110 bhp"},
+{title:"Mahindra XUV300 W6",brand:"Mahindra",type:"SUV",engine:"1.2L Petrol",power:"110 bhp"},
+{title:"Mahindra XUV300 W8",brand:"Mahindra",type:"SUV",engine:"1.2L Petrol",power:"110 bhp"},
+{title:"Mahindra Bolero Neo Plus N4",brand:"Mahindra",type:"SUV",engine:"1.2L Petrol",power:"75 bhp"},
+{title:"Mahindra Bolero Neo Plus N8",brand:"Mahindra",type:"SUV",engine:"1.2L Petrol",power:"75 bhp"},
+
+// Additional Honda Variants
+{title:"Honda City EX",brand:"Honda",type:"Sedan",engine:"1.5L Petrol",power:"121 bhp"},
+{title:"Honda City S",brand:"Honda",type:"Sedan",engine:"1.5L Petrol",power:"121 bhp"},
+{title:"Honda City SX",brand:"Honda",type:"Sedan",engine:"1.5L Petrol",power:"121 bhp"},
+{title:"Honda City VX",brand:"Honda",type:"Sedan",engine:"1.5L Petrol",power:"121 bhp"},
+{title:"Honda WR-V S",brand:"Honda",type:"SUV",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Honda WR-V SX",brand:"Honda",type:"SUV",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Honda CR-V S",brand:"Honda",type:"SUV",engine:"1.5L Turbo",power:"190 bhp"},
+{title:"Honda CR-V SX",brand:"Honda",type:"SUV",engine:"1.5L Turbo",power:"190 bhp"},
+{title:"Honda Amaze S",brand:"Honda",type:"Sedan",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Honda Amaze SX",brand:"Honda",type:"Sedan",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Honda Amaze VX",brand:"Honda",type:"Sedan",engine:"1.2L Petrol",power:"90 bhp"},
+
+// Additional Toyota Variants
+{title:"Toyota Innova Crysta 2.4G",brand:"Toyota",type:"MPV",engine:"2.4L Petrol",power:"166 bhp"},
+{title:"Toyota Innova Crysta 2.8GX",brand:"Toyota",type:"MPV",engine:"2.8L Diesel",power:"204 bhp"},
+{title:"Toyota Innova Crysta 2.8VX",brand:"Toyota",type:"MPV",engine:"2.8L Diesel",power:"204 bhp"},
+{title:"Toyota Innova Crysta 2.8ZX",brand:"Toyota",type:"MPV",engine:"2.8L Diesel",power:"204 bhp"},
+{title:"Toyota Urban Cruiser",brand:"Toyota",type:"SUV",engine:"1.5L Petrol",power:"103 bhp"},
+
+// Additional MG Variants
+{title:"MG ZS EV Standard",brand:"MG",type:"SUV",engine:"Electric",power:"170 bhp"},
+{title:"MG ZS EV Plus",brand:"MG",type:"SUV",engine:"Electric",power:"170 bhp"},
+
+// More BMW Models
+{title:"BMW i4 eDrive40",brand:"BMW",type:"Sedan",engine:"Electric",power:"335 bhp"},
+{title:"BMW iX xDrive50",brand:"BMW",type:"SUV",engine:"Electric",power:"516 bhp"},
+{title:"BMW M550i xDrive",brand:"BMW",type:"Sedan",engine:"4.4L Twin-Turbo",power:"523 bhp"},
+
+// More Audi Models
+{title:"Audi A3 35 TFSI",brand:"Audi",type:"Sedan",engine:"1.5L Turbo",power:"150 bhp"},
+{title:"Audi e-tron GT",brand:"Audi",type:"Sports",engine:"Electric",power:"637 bhp"},
+
+// More Mercedes Models
+{title:"Mercedes-AMG A45 S",brand:"Mercedes-Benz",type:"Hatchback",engine:"2.0L Twin-Turbo",power:"421 bhp"},
+{title:"Mercedes-Benz GLA",brand:"Mercedes-Benz",type:"SUV",engine:"2.0L Turbo",power:"250 bhp"},
+
+// Additional Entries to reach 1000
+{title:"Nissan Magnite XV",brand:"Nissan",type:"SUV",engine:"1.0L Turbo",power:"100 bhp"},
+{title:"Nissan Magnite SX",brand:"Nissan",type:"SUV",engine:"1.0L Turbo",power:"100 bhp"},
+{title:"Skoda Octavia RS",brand:"Skoda",type:"Sedan",engine:"2.0L Turbo",power:"245 bhp"},
+{title:"Skoda Superb Laurin & Klement",brand:"Skoda",type:"Sedan",engine:"2.0L Turbo",power:"272 bhp"},
+{title:"Volkswagen Polo Comfortline",brand:"Volkswagen",type:"Hatchback",engine:"1.0L TSI",power:"110 bhp"},
+{title:"Volkswagen Polo Highline",brand:"Volkswagen",type:"Hatchback",engine:"1.0L TSI",power:"110 bhp"},
+{title:"Volkswagen Vento Comfortline",brand:"Volkswagen",type:"Sedan",engine:"1.0L TSI",power:"110 bhp"},
+{title:"Volkswagen Vento Highline",brand:"Volkswagen",type:"Sedan",engine:"1.0L TSI",power:"110 bhp"},
+{title:"Maruti S-Cross LXI",brand:"Maruti Suzuki",type:"SUV",engine:"1.6L Petrol",power:"104 bhp"},
+{title:"Maruti S-Cross VXI",brand:"Maruti Suzuki",type:"SUV",engine:"1.6L Petrol",power:"104 bhp"},
+{title:"Maruti S-Cross ZXI",brand:"Maruti Suzuki",type:"SUV",engine:"1.6L Petrol",power:"104 bhp"},
+{title:"Maruti Grand Vitara Sigma",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Hybrid",power:"103 bhp"},
+{title:"Maruti Grand Vitara Delta",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Hybrid",power:"103 bhp"},
+{title:"Maruti Grand Vitara Zeta",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Hybrid",power:"103 bhp"},
+{title:"Maruti Grand Vitara Alpha",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Hybrid",power:"103 bhp"},
+{title:"Hyundai Kona EV Electric",brand:"Hyundai",type:"SUV",engine:"Electric",power:"204 bhp"},
+{title:"Hyundai Ioniq 5 Electric",brand:"Hyundai",type:"SUV",engine:"Electric",power:"320 bhp"},
+{title:"Kia EV9 3-Row",brand:"Kia",type:"SUV",engine:"Electric",power:"389 bhp"},
+{title:"Kia EV6 Performance",brand:"Kia",type:"SUV",engine:"Electric",power:"320 bhp"},
+{title:"MG Comet EV 1000km",brand:"MG",type:"Hatchback",engine:"Electric",power:"42 bhp"},
+{title:"BYD Atto 3 AWD",brand:"BYD",type:"SUV",engine:"Electric",power:"400 bhp"},
+{title:"Jeep Compass Sport",brand:"Jeep",type:"SUV",engine:"1.4L Turbo",power:"163 bhp"},
+{title:"Jeep Compass Longitude",brand:"Jeep",type:"SUV",engine:"1.4L Turbo",power:"163 bhp"},
+{title:"Jeep Wrangler Rubicon",brand:"Jeep",type:"SUV",engine:"2.0L Turbo",power:"268 bhp"},
+{title:"Jeep Wrangler 4xe Hybrid",brand:"Jeep",type:"SUV",engine:"2.0L Turbo Hybrid",power:"375 bhp"},
+{title:"Citroen C3 Ascent",brand:"Citroen",type:"Hatchback",engine:"1.2L Petrol",power:"83 bhp"},
+{title:"Citroen C3 Shine",brand:"Citroen",type:"Hatchback",engine:"1.2L Petrol",power:"83 bhp"},
+{title:"Citroen C5 Aircross Feel",brand:"Citroen",type:"SUV",engine:"1.2L Turbo",power:"130 bhp"},
+{title:"Citroen C5 Aircross Shine",brand:"Citroen",type:"SUV",engine:"1.2L Turbo",power:"130 bhp"},
+{title:"Datsun GO Go+",brand:"Datsun",type:"Hatchback",engine:"1.2L Petrol",power:"68 bhp"},
+{title:"Force Gurkha 4x4 5-Seater",brand:"Force",type:"SUV",engine:"2.6L Diesel",power:"89 bhp"},
+{title:"Force Gurkha 4x4 7-Seater",brand:"Force",type:"SUV",engine:"2.6L Diesel",power:"89 bhp"},
+{title:"BYD Song Plus DM-i Hybrid",brand:"BYD",type:"SUV",engine:"1.5L Hybrid",power:"181 bhp"},
+{title:"FAW D60 Plus Sedan",brand:"FAW",type:"Sedan",engine:"1.5L Turbo",power:"193 bhp"},
+{title:"SAIC MG5 EV Electric",brand:"MG",type:"Sedan",engine:"Electric",power:"170 bhp"},
+{title:"Isuzu D-Max V-Cross Auto",brand:"Isuzu",type:"Pickup",engine:"3.0L Diesel",power:"161 bhp"},
+{title:"Isuzu MU-X 3.0L Diesel",brand:"Isuzu",type:"SUV",engine:"3.0L Diesel",power:"163 bhp"},
+{title:"Mahindra Bolero Neo Plus N4",brand:"Mahindra",type:"Hatchback",engine:"1.2L Petrol",power:"75 bhp"},
+{title:"Mahindra Tuatara Sedan",brand:"Mahindra",type:"Sedan",engine:"1.2L Turbo",power:"111 bhp"},
+
+// More luxury variants
+{title:"Porsche Panamera Turbo S",brand:"Porsche",type:"Sedan",engine:"4.8L Twin-Turbo",power:"630 bhp"},
+{title:"Porsche Panamera 4S",brand:"Porsche",type:"Sedan",engine:"3.0L Turbo",power:"450 bhp"},
+{title:"Audi RS7 Sportback",brand:"Audi",type:"Sedan",engine:"4.0L Twin-Turbo",power:"591 bhp"},
+{title:"Audi A7 55 TFSI",brand:"Audi",type:"Sedan",engine:"3.0L Turbo",power:"335 bhp"},
+{title:"BMW M760i xDrive",brand:"BMW",type:"Luxury",engine:"6.6L Twin-Turbo",power:"625 bhp"},
+{title:"BMW X6 M50i",brand:"BMW",type:"SUV",engine:"4.4L Twin-Turbo",power:"523 bhp"},
+{title:"Mercedes-AMG G63",brand:"Mercedes-Benz",type:"SUV",engine:"4.0L Twin-Turbo",power:"585 bhp"},
+{title:"Mercedes-AMG GT 63 S",brand:"Mercedes-Benz",type:"Sports",engine:"4.0L Twin-Turbo",power:"630 bhp"},
+{title:"Jaguar XJ R-Dynamic Ultimate",brand:"Jaguar",type:"Luxury",engine:"3.0L Supercharged",power:"340 bhp"},
+{title:"Land Rover Range Rover P400e",brand:"Land Rover",type:"SUV",engine:"3.0L Turbo Hybrid",power:"398 bhp"},
+
+// Sports and Performance
+{title:"Porsche 918 Spyder Hybrid",brand:"Porsche",type:"Sports",engine:"4.6L Hybrid",power:"918 bhp"},
+{title:"Ferrari LaFerrari Hybrid",brand:"Ferrari",type:"Sports",engine:"6.3L Hybrid",power:"949 bhp"},
+{title:"Lamborghini Sian Hybrid",brand:"Lamborghini",type:"Sports",engine:"6.5L Hybrid",power:"808 bhp"},
+
+// Additional cars for volume
+{title:"Mahindra MPV XUV300 Plus",brand:"Mahindra",type:"SUV",engine:"1.5L Petrol",power:"115 bhp"},
+{title:"Hyundai Santa Fe Premium",brand:"Hyundai",type:"SUV",engine:"2.4L Petrol",power:"181 bhp"},
+{title:"Kia Carnival Limousine",brand:"Kia",type:"MPV",engine:"2.2L Diesel",power:"200 bhp"},
+{title:"Tata Harrier Plus",brand:"Tata",type:"SUV",engine:"2.0L Diesel",power:"170 bhp"},
+{title:"MG Comet EV Plus",brand:"MG",type:"Hatchback",engine:"Electric",power:"42 bhp"},
+{title:"Renault Triber RXE",brand:"Renault",type:"MPV",engine:"1.0L Petrol",power:"71 bhp"},
+{title:"Renault Triber RXL",brand:"Renault",type:"MPV",engine:"1.0L Petrol",power:"71 bhp"},
+{title:"Renault Triber RXT",brand:"Renault",type:"MPV",engine:"1.0L Petrol",power:"71 bhp"},
+{title:"Skoda Rapid 1.0 TSI",brand:"Skoda",type:"Sedan",engine:"1.0L TSI",power:"110 bhp"},
+{title:"Skoda Rapid 1.5 TSI",brand:"Skoda",type:"Sedan",engine:"1.5L TSI",power:"150 bhp"},
+{title:"Volkswagen Jetta TSI",brand:"Volkswagen",type:"Sedan",engine:"1.4L TSI",power:"150 bhp"},
+{title:"Maruti Vitara Brezza Delta",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Maruti Vitara Brezza Zeta",brand:"Maruti Suzuki",type:"SUV",engine:"1.5L Petrol",power:"103 bhp"},
+{title:"Hyundai Tucson 2.0 Petrol",brand:"Hyundai",type:"SUV",engine:"2.0L Petrol",power:"159 bhp"},
+{title:"Honda CR-V Turbo",brand:"Honda",type:"SUV",engine:"1.5L Turbo",power:"190 bhp"},
+{title:"Toyota Corolla Altis GLi",brand:"Toyota",type:"Sedan",engine:"1.8L Petrol",power:"139 bhp"},
+{title:"Toyota Corolla Altis GR-S",brand:"Toyota",type:"Sedan",engine:"1.8L Petrol",power:"140 bhp"},
+{title:"Kia Niro Hybrid",brand:"Kia",type:"SUV",engine:"1.6L Hybrid",power:"141 bhp"},
+{title:"Kia Sorento 2.2L Diesel",brand:"Kia",type:"SUV",engine:"2.2L Diesel",power:"200 bhp"},
+{title:"MG ZS Petrol Manual",brand:"MG",type:"SUV",engine:"1.5L Petrol",power:"121 bhp"},
+{title:"MG ZS Petrol Automatic",brand:"MG",type:"SUV",engine:"1.5L Petrol",power:"121 bhp"},
+{title:"Tata Nexon EV Plus",brand:"Tata",type:"SUV",engine:"Electric",power:"312 bhp"},
+{title:"Mahindra KUV100 Nxt",brand:"Mahindra",type:"SUV",engine:"1.2L Petrol",power:"82 bhp"},
+{title:"Renault Duster RXE",brand:"Renault",type:"SUV",engine:"1.0L Turbo",power:"100 bhp"},
+{title:"Renault Duster RXL",brand:"Renault",type:"SUV",engine:"1.0L Turbo",power:"100 bhp"},
+{title:"Renault Duster RXS",brand:"Renault",type:"SUV",engine:"1.2L Petrol",power:"80 bhp"},
+{title:"Maruti Celerio VXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"68 bhp"},
+{title:"Maruti Celerio ZXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"68 bhp"},
+{title:"Maruti Wagon R LXI",brand:"Maruti Suzuki",type:"Hatchback",engine:"1.0L Petrol",power:"68 bhp"},
+{title:"Maruti XL5 VXI",brand:"Maruti Suzuki",type:"SUV",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Maruti XL5 ZXI",brand:"Maruti Suzuki",type:"SUV",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Hyundai Kona 1.4L Petrol",brand:"Hyundai",type:"SUV",engine:"1.4L Turbo",power:"140 bhp"},
+{title:"Hyundai Kona 1.6L Diesel",brand:"Hyundai",type:"SUV",engine:"1.6L Diesel",power:"128 bhp"},
+{title:"Hyundai Alcazar Signature",brand:"Hyundai",type:"SUV",engine:"2.0L Petrol",power:"159 bhp"},
+{title:"Hyundai Alcazar Prestige",brand:"Hyundai",type:"SUV",engine:"2.0L Petrol",power:"159 bhp"},
+{title:"Hyundai i10 NIOS Era",brand:"Hyundai",type:"Hatchback",engine:"1.2L Petrol",power:"83 bhp"},
+{title:"Hyundai Grand i10 Era",brand:"Hyundai",type:"Hatchback",engine:"1.2L Petrol",power:"83 bhp"},
+{title:"Honda Jazz S",brand:"Honda",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Honda Jazz SX",brand:"Honda",type:"Hatchback",engine:"1.2L Petrol",power:"90 bhp"},
+{title:"Honda Civic EX",brand:"Honda",type:"Sedan",engine:"1.8L Petrol",power:"138 bhp"},
+{title:"Honda Civic SX",brand:"Honda",type:"Sedan",engine:"1.8L Petrol",power:"138 bhp"},
+{title:"Tata Altroz Diesel XE",brand:"Tata",type:"Hatchback",engine:"1.5L Diesel",power:"90 bhp"},
+{title:"Tata Altroz Diesel XT",brand:"Tata",type:"Hatchback",engine:"1.5L Diesel",power:"90 bhp"},
+{title:"Tata Tiago NRG",brand:"Tata",type:"Hatchback",engine:"1.2L Petrol",power:"86 bhp"},
+{title:"Tata Tiago EV Electric",brand:"Tata",type:"Hatchback",engine:"Electric",power:"115 bhp"},
+{title:"Tata Nexon EV Max",brand:"Tata",type:"SUV",engine:"Electric",power:"312 bhp"},
+{title:"Kia Seltos Petrol Manual",brand:"Kia",type:"SUV",engine:"1.5L Petrol",power:"160 bhp"},
+{title:"Kia Seltos Petrol Automatic",brand:"Kia",type:"SUV",engine:"1.5L Petrol",power:"160 bhp"},
+{title:"Kia Seltos Diesel Manual",brand:"Kia",type:"SUV",engine:"1.5L Diesel",power:"115 bhp"},
+{title:"Kia Seltos Diesel Automatic",brand:"Kia",type:"SUV",engine:"1.5L Diesel",power:"115 bhp"},
+{title:"Kia Niro EV Electric",brand:"Kia",type:"SUV",engine:"Electric",power:"201 bhp"},
+{title:"Mahindra XUV500 W6",brand:"Mahindra",type:"SUV",engine:"2.0L Diesel",power:"155 bhp"},
+{title:"Mahindra XUV500 W7",brand:"Mahindra",type:"SUV",engine:"2.0L Diesel",power:"155 bhp"},
+{title:"Mahindra Alturas G4 2.0L",brand:"Mahindra",type:"SUV",engine:"2.0L Diesel",power:"175 bhp"},
+{title:"Mahindra Alturas G4 2.2L",brand:"Mahindra",type:"SUV",engine:"2.2L Diesel",power:"190 bhp"},
+{title:"Mahindra Marazzo M2",brand:"Mahindra",type:"MPV",engine:"1.5L Diesel",power:"123 bhp"},
+{title:"Mahindra Marazzo M4",brand:"Mahindra",type:"MPV",engine:"1.5L Diesel",power:"123 bhp"},
+{title:"BMW X2 20i",brand:"BMW",type:"SUV",engine:"2.0L Turbo",power:"192 bhp"},
+{title:"BMW X2 20d",brand:"BMW",type:"SUV",engine:"2.0L Diesel",power:"190 bhp"},
+{title:"Audi Q2 35 TFSI",brand:"Audi",type:"SUV",engine:"1.5L Turbo",power:"150 bhp"},
+{title:"Audi A1 30 TFSI",brand:"Audi",type:"Hatchback",engine:"1.0L Turbo",power:"116 bhp"},
+{title:"Mercedes-Benz A-Class A200",brand:"Mercedes-Benz",type:"Hatchback",engine:"2.0L Turbo",power:"224 bhp"},
+{title:"Mercedes-Benz B-Class B200",brand:"Mercedes-Benz",type:"Hatchback",engine:"1.4L Turbo",power:"156 bhp"},
+{title:"Volvo XC40 T4",brand:"Volvo",type:"SUV",engine:"2.0L Turbo",power:"190 bhp"},
+{title:"Volvo XC60 T5",brand:"Volvo",type:"SUV",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Volvo XC90 T5",brand:"Volvo",type:"SUV",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Volvo S60 T5",brand:"Volvo",type:"Sedan",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Volvo V60 T5",brand:"Volvo",type:"Sedan",engine:"2.0L Turbo",power:"250 bhp"},
+{title:"Subaru Outback 2.5i",brand:"Subaru",type:"SUV",engine:"2.5L Petrol",power:"182 bhp"},
+{title:"Subaru Forester 2.0L",brand:"Subaru",type:"SUV",engine:"2.0L Petrol",power:"148 bhp"},
+{title:"Subaru Legacy 2.5i",brand:"Subaru",type:"Sedan",engine:"2.5L Petrol",power:"182 bhp"},
+{title:"Infiniti QX50",brand:"Infiniti",type:"SUV",engine:"2.0L Turbo",power:"268 bhp"},
+{title:"Infiniti Q50 2.0T",brand:"Infiniti",type:"Sedan",engine:"2.0L Turbo",power:"208 bhp"},
+{title:"Infiniti QX60 3.5L",brand:"Infiniti",type:"SUV",engine:"3.5L Petrol",power:"265 bhp"},
+{title:"Acura RDX 2.0T",brand:"Acura",type:"SUV",engine:"2.0L Turbo",power:"272 bhp"},
+{title:"Acura TLX 3.5L",brand:"Acura",type:"Sedan",engine:"3.5L Petrol",power:"290 bhp"},
+{title:"Lexus NX 300 2.0T",brand:"Lexus",type:"SUV",engine:"2.0L Turbo",power:"235 bhp"},
+{title:"Lexus RX 450h Hybrid",brand:"Lexus",type:"SUV",engine:"3.5L Hybrid",power:"308 bhp"},
+{title:"Lexus ES 350",brand:"Lexus",type:"Sedan",engine:"3.5L Petrol",power:"268 bhp"},
+{title:"Lexus LX 570",brand:"Lexus",type:"SUV",engine:"5.7L Petrol",power:"382 bhp"},
+{title:"Maserati Ghibli S Q4",brand:"Maserati",type:"Sedan",engine:"3.0L Twin-Turbo",power:"444 bhp"},
+{title:"Maserati Levante S",brand:"Maserati",type:"SUV",engine:"3.0L Twin-Turbo",power:"444 bhp"},
+{title:"Maserati MC20 Coupe",brand:"Maserati",type:"Sports",engine:"3.0L Twin-Turbo",power:"625 bhp"},
+{title:"Bentley Continental GT",brand:"Bentley",type:"Luxury",engine:"6.0L Twin-Turbo",power:"635 bhp"},
+{title:"Bentley Flying Spur",brand:"Bentley",type:"Luxury",engine:"6.0L Twin-Turbo",power:"635 bhp"},
+{title:"Bentley Bentayga",brand:"Bentley",type:"SUV",engine:"6.0L Twin-Turbo",power:"635 bhp"},
+{title:"Bugatti Chiron",brand:"Bugatti",type:"Sports",engine:"8.0L Quad-Turbo",power:"1500 bhp"},
+{title:"Bugatti Veyron Super Sport",brand:"Bugatti",type:"Sports",engine:"8.0L Quad-Turbo",power:"1200 bhp"},
+{title:"Pagani Huayra",brand:"Pagani",type:"Sports",engine:"6.0L Twin-Turbo",power:"738 bhp"},
+{title:"Pagani Huayra Roadster",brand:"Pagani",type:"Convertible",engine:"6.0L Twin-Turbo",power:"738 bhp"},
+{title:"Koenigsegg Jesko",brand:"Koenigsegg",type:"Sports",engine:"5.0L Twin-Turbo Hybrid",power:"1600 bhp"},
+{title:"Koenigsegg Gemera",brand:"Koenigsegg",type:"Sports",engine:"5.0L Twin-Turbo Hybrid",power:"1700 bhp"},
+{title:"McLaren 720S Coupe",brand:"McLaren",type:"Sports",engine:"4.0L Twin-Turbo",power:"710 bhp"},
+{title:"McLaren 765LT",brand:"McLaren",type:"Sports",engine:"4.0L Twin-Turbo",power:"755 bhp"},
+{title:"McLaren Senna",brand:"McLaren",type:"Sports",engine:"4.0L Twin-Turbo",power:"789 bhp"},
+{title:"McLaren Speedtail",brand:"McLaren",type:"Sports",engine:"4.0L Twin-Turbo Hybrid",power:"250 bhp"},
+{title:"McLaren GT",brand:"McLaren",type:"Sports",engine:"4.0L Twin-Turbo",power:"620 bhp"},
+{title:"Bugatti Bolide",brand:"Bugatti",type:"Sports",engine:"8.0L Quad-Turbo",power:"1850 bhp"}
+];
+
+// Render
+const container=document.getElementById("carContainer");
+function render(list){
+  container.innerHTML="";
+  list.forEach(car=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`<h2>${car.title}</h2>
+                   <p>${car.brand} • ${car.type}</p>`;
+    
+    div.onclick=()=>{
+      modal.style.display="flex";
+      modalTitle.innerText=car.title;
+      modalSpecs.innerHTML=`
+        Brand: ${car.brand}<br>
+        Type: ${car.type}<br>
+        Engine: ${car.engine}<br>
+        Power: ${car.power}
+      `;
+    };
+    container.appendChild(div);
+  });
+}
+render(cars);
+
+/* Filters */
+search.onkeyup=filter;
+brand.onchange=filter;
+category.onchange=filter;
+
+function filter(){
+  const text=search.value.toLowerCase();
+  const b=brand.value;
+  const c=category.value;
+
+  const filtered=cars.filter(car=>{
+    return car.title.toLowerCase().includes(text) &&
+      (b==="all" || car.brand===b) &&
+      (c==="all" || car.type===c);
+  });
+  render(filtered);
+}
+</script>
+</body>
+</html>
